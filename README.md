@@ -1,4 +1,4 @@
-# COM3D2-Advanced-Material-Modifier AKA AMM
+# AdvancedMaterialModifier aka AMM
 A plugin for COM3D2 that helps make quick and uniform edits to materials ingame.
 
 ## Pros ##
