@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COM3D2.AdvancedMaterialModifier", "COM3d2.DeRim.Plugin\COM3D2.AdvancedMaterialModifier.csproj", "{572669DB-CF89-4387-ABC6-EDF614528638}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COM3D2.AdvancedMaterialModifier", "COM3D2AMM\COM3D2.AdvancedMaterialModifier.csproj", "{572669DB-CF89-4387-ABC6-EDF614528638}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
