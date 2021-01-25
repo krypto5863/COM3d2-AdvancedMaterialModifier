@@ -31,14 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="0OldClasses\BackgroundsSupport.cs" />
     <Compile Include="HelperClasses\FetchLibrary.cs" />
-    <None Include="0OldClasses\GamePropsSupport.cs" />
     <Compile Include="SorterSenderSaver.cs" />
     <Compile Include="PropertyChanger.cs" />
     <Compile Include="HelperClasses\CfgGroup.cs" />
     <Compile Include="VanillaHarmonyPatch.cs" />
-    <None Include="0OldClasses\OldModifyMaterial.cs" />
     <Compile Include="MPSHarmonyPatch.cs" />
     <Compile Include="AMM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,4 +71,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>del "G:\KISS\COM3D2Test\BepinEx\plugins\$(TargetFileName)"
+copy "$(TargetPath)" "G:\KISS\COM3D2Test\BepinEx\plugins"
+"G:\KISS\COM3D2Test\COM3D2x64.exe"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

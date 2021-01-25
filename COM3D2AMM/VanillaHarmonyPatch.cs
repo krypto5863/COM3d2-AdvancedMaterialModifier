@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.Linq;
 using UnityEngine;
 using static COM3D2.AdvancedMaterialModifier.Plugin.Init;
 using static COM3D2.AdvancedMaterialModifier.Plugin.SorterSenderSaver;
@@ -21,7 +22,24 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 
 			@this.StartCoroutine(ModifySingle(__result));
 		}
+		//This function is concerned with tracking material edits and alerting AMM so it can correct it.
+		[HarmonyPatch(typeof(TBody), "ChangeMaterial"), HarmonyPatch(typeof(TBody), "ChangeShader"), HarmonyPatch(typeof(TBody), "SetMaterialProperty"), HarmonyPatch(typeof(TBody), "ChangeCol"), HarmonyPatch(typeof(TBody), "ChangeTex")]
+		[HarmonyPostfix]
+		private static void NotifyOfChange(ref TBody __instance)
+		{
+#if (DEBUG)
+			Debug.Log("Picked up a material change");
+#endif
 
+			__instance
+			.goSlot
+			.Select(s => s)
+			.Where(s => s != null)
+			.Select(s => s.obj)
+			.Where(o => o != null)
+			.ToList()
+			.ForEach(obj => @this.StartCoroutine(ModifySingle(obj)));		
+		}
 		//The following functions all deal with Props loaded by the vanilla game.
 		[HarmonyPatch(typeof(BgMgr), "AddPrefabToBg"), HarmonyPatch(typeof(BgMgr), "AddAssetsBundleToBg"), HarmonyPatch(typeof(PhotoBGObjectData), "Instantiate")]
 		[HarmonyPostfix]
