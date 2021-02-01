@@ -57,7 +57,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 		}
 		public static bool AddToObjectDictionary(GameObject gameobj, CfgGroup cfg)
 		{
-			if (!ObjectDictionary.ContainsKey(gameobj))
+			if (gameobj != null && !ObjectDictionary.ContainsKey(gameobj))
 			{
 				ObjectDictionary.Add(gameobj, cfg);
 				return true;
@@ -104,7 +104,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 
 			CfgGroup activecfg = null;
 
-			if (!ObjectDictionary.TryGetValue(@object, out activecfg) || activecfg.Enable.Value != true)
+			if (@object == null || !ObjectDictionary.TryGetValue(@object, out activecfg) || activecfg.Enable.Value != true)
 			{
 				yield break;
 			}
