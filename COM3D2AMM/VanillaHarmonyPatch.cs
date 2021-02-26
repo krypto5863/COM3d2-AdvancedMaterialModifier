@@ -16,9 +16,51 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 #if (DEBUG)
 			Debug.Log("Picked up a mesh change");
 #endif
-			int slotid = (int)TBody.hashSlotName[__2];
 
-			AddToObjectDictionary(__result, slotid);
+			if (__result == null) 
+			{
+#if (DEBUG)
+				Debug.Log("Gameobject was null!");
+#endif
+				return;
+			}
+
+#if (DEBUG)
+			Debug.Log("Result was not null...");
+#endif
+
+			if (__2 == null)
+			{
+#if (DEBUG)
+				Debug.Log("Slot name was null! Aborting....");
+#endif
+				return;
+			}
+
+#if (DEBUG)
+			Debug.Log("Slot name was not null");
+#endif
+
+			int? slotid = (int?)TBody.hashSlotName[__2] ?? null;
+
+			if (slotid == null)
+			{
+#if (DEBUG)
+				Debug.Log("SlotID was found null so object will be treated as a game prop.");
+#endif
+				AddToObjectDictionary(__result, Props);
+			}
+			else
+			{
+#if (DEBUG)
+				Debug.Log("Adding to dictionary.");
+#endif
+				AddToObjectDictionary(__result, slotid.Value);
+			}
+
+#if (DEBUG)
+			Debug.Log("Start coroutine...");
+#endif
 
 			@this.StartCoroutine(ModifySingle(__result));
 		}
