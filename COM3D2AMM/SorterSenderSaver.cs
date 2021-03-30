@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,14 +10,87 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 	internal class SorterSenderSaver
 	{
 
-		private static readonly int[] bodyslot = new int[] { 0 };
-		private static readonly int[] headslot = new int[] { 1 };
-		private static readonly int[] hairslot = new int[] { 3, 4, 5, 6, 18 };
-		private static readonly int[] clothesslot = new int[] { 7, 8, 9, 10, 11, 12, 13, 14 };
-		private static readonly int[] accslot = new int[] { 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55 };
+		private static readonly TBody.SlotID[] bodyslot = new TBody.SlotID[]
+		{
+			TBody.SlotID.body,
+			TBody.SlotID.chikubi,
+			TBody.SlotID.chinko,
+			TBody.SlotID.asshair,
+			TBody.SlotID.underhair
+		};
+
+		private static readonly TBody.SlotID[] headslot = new TBody.SlotID[]
+		{
+			TBody.SlotID.head,
+			TBody.SlotID.kousoku_lower,
+			TBody.SlotID.kousoku_upper
+		};
+
+		private static readonly TBody.SlotID[] hairslot = new TBody.SlotID[]
+		{
+			TBody.SlotID.hairAho,
+			TBody.SlotID.hairF,
+			TBody.SlotID.hairR,
+			TBody.SlotID.hairS,
+			TBody.SlotID.hairS_2,
+			TBody.SlotID.hairT,
+			TBody.SlotID.hairT_2
+		};
+
+		private static readonly TBody.SlotID[] clothesslot = new TBody.SlotID[]
+		{
+			TBody.SlotID.bra,
+			TBody.SlotID.glove,
+			TBody.SlotID.headset,
+			TBody.SlotID.mizugi,
+			TBody.SlotID.mizugi_buttom,
+			TBody.SlotID.mizugi_top,
+			TBody.SlotID.onepiece,
+			TBody.SlotID.panz,
+			TBody.SlotID.shoes,
+			TBody.SlotID.skirt,
+			TBody.SlotID.stkg,
+			TBody.SlotID.wear
+		};
+
+		private static readonly TBody.SlotID[] accslot = new TBody.SlotID[]
+		{
+			TBody.SlotID.accAnl,
+			TBody.SlotID.accAshi,
+			TBody.SlotID.accAshi_2,
+			TBody.SlotID.accFace,
+			TBody.SlotID.accHa,
+			TBody.SlotID.accHana,
+			TBody.SlotID.accHat,
+			TBody.SlotID.accHead,
+			TBody.SlotID.accHead_2,
+			TBody.SlotID.accHeso,
+			TBody.SlotID.accKamiSubL,
+			TBody.SlotID.accKamiSubR,
+			TBody.SlotID.accKami_1_,
+			TBody.SlotID.accKami_2_,
+			TBody.SlotID.accKami_3_,
+			TBody.SlotID.accKoshi,
+			TBody.SlotID.accKubi,
+			TBody.SlotID.accKubiwa,
+			TBody.SlotID.accMiMiL,
+			TBody.SlotID.accMiMiR,
+			TBody.SlotID.accNipL,
+			TBody.SlotID.accNipR,
+			TBody.SlotID.accSenaka,
+			TBody.SlotID.accShippo,
+			TBody.SlotID.accUde,
+			TBody.SlotID.accUde_2,
+			TBody.SlotID.accVag,
+			TBody.SlotID.accXXX,
+			TBody.SlotID.HandItemL,
+			TBody.SlotID.HandItemR,
+			TBody.SlotID.kubiwa,
+			TBody.SlotID.megane
+		};
 
 		private static Dictionary<GameObject, CfgGroup> ObjectDictionary = new Dictionary<GameObject, CfgGroup>();
-		public static bool AddToObjectDictionary(GameObject gameobj, int slotid)
+		public static bool AddToObjectDictionary(GameObject gameobj, TBody.SlotID slotid)
 		{
 
 #if (DEBUG)

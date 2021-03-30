@@ -12,6 +12,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 				maid
 				.body0
 				.goSlot
+				.GetListParents()
 				.Where(s => slotlist.Contains((int)s.SlotId))
 				.Select(s => s.obj)
 				.Where(o => o != null)
@@ -49,6 +50,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 				maid
 				.body0
 				.goSlot
+				.GetListParents()
 				.Where(s => slotlist.Contains((int)s.SlotId))
 				.Select(s => s.obj)
 				.Where(o => o != null)

@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Linq;
+using System;
 using UnityEngine;
 using static COM3D2.AdvancedMaterialModifier.Plugin.Init;
 using static COM3D2.AdvancedMaterialModifier.Plugin.SorterSenderSaver;
@@ -41,9 +42,18 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 			Debug.Log("Slot name was not null");
 #endif
 
-			int? slotid = (int?)TBody.hashSlotName[__2] ?? null;
+			TBody.SlotID slotid = TBody.SlotID.end;
 
-			if (slotid == null)
+			try
+			{
+				slotid = (TBody.SlotID)Enum.Parse(typeof(TBody.SlotID), __2.ToLower());
+			}
+			catch 
+			{  
+			
+			}
+
+			if (slotid.Equals(TBody.SlotID.end))
 			{
 #if (DEBUG)
 				Debug.Log("SlotID was found null so object will be treated as a game prop.");
@@ -55,7 +65,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 #if (DEBUG)
 				Debug.Log("Adding to dictionary.");
 #endif
-				AddToObjectDictionary(__result, slotid.Value);
+				AddToObjectDictionary(__result, slotid);
 			}
 
 #if (DEBUG)
@@ -75,6 +85,7 @@ namespace COM3D2.AdvancedMaterialModifier.Plugin
 
 			__instance
 			.goSlot
+			.GetListParents()
 			.Select(s => s)
 			.Where(s => s != null)
 			.Select(s => s.obj)

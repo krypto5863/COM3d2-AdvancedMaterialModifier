@@ -42,34 +42,30 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\BepinEx\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\allalone\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\GameOriginal\AssemblyCSharp publicizedStub\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\GameOriginal\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-UnityScript-firstpass">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\GameOriginal\Assembly-UnityScript-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\BepInEx.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\BepinEx\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx.Harmony">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\BepInEx.Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\BepinEx\BepInEx.Harmony.dll</HintPath>
     </Reference>
     <Reference Include="COM3D2.MeidoPhotoStudio">
-      <HintPath>G:\KISS\COM3D2Test\BepinEx\plugins\COM3D2.MeidoPhotoStudio\COM3D2.MeidoPhotoStudio.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\CommunityModPlugins\COM3D2.MeidoPhotoStudio.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityInjector">
-      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\UnityInjector.dll</HintPath>
+      <HintPath>..\..\..\..\Desktop\Meido Assemblies\COM Assemblies\GameOriginal\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
