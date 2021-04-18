@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace COM3D2.AdvancedMaterialModifier.Plugin
 {
-	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "1.1.2")]
+	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "1.1.2.1")]
 	[BepInDependency("org.bepinex.plugins.unityinjectorloader", BepInDependency.DependencyFlags.SoftDependency)]
 	internal class Init : BaseUnityPlugin
 	{
