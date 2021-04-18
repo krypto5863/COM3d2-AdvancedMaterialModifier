@@ -1,3 +1,5 @@
+# Be Advised! This is the 1.57+ Support Branch! The main branch currently only support 1.55!
+
 # AdvancedMaterialModifier aka AMM
 A plugin for COM3D2 that helps make quick and uniform edits to materials ingame.
 
