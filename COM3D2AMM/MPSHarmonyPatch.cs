@@ -1,4 +1,4 @@
-﻿using COM3D2.MeidoPhotoStudio.Plugin;
+﻿using MeidoPhotoStudio.Plugin;
 using HarmonyLib;
 using UnityEngine;
 using static COM3D2.AdvancedMaterialModifier.Plugin.Init;
