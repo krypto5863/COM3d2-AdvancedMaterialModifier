@@ -1,236 +1,223 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace COM3D2.AdvancedMaterialModifier.Plugin
+namespace COM3D2.AdvancedMaterialModifier
 {
 	//Concerned with taking materials and changing them to user spec.
-	internal class PropertyChanger
+	internal static class PropertyChanger
 	{
-		private static readonly string RimPow = "_RimPower";
-		private static readonly string NPRRimPow = "_RimLightPower";
-		private static readonly string RimShift = "_RimShift";
-		private static readonly string NPRRimShift = "_RimLightValue";
-		private static readonly string RimCol = "_RimColor";
-		private static readonly string NPRRimCol = "_RimLightColor";
-		private static readonly string OutlineWid = "_OutlineWidth";
-		private static readonly string OutlineCol = "_OutlineColor";
-		private static readonly string Toon = "_ToonRamp";
-		private static readonly string ShadowRate = "_ShadowRateToon";
-		private static readonly string ShadowCol = "_ShadowColor";
-		public static IEnumerator Run(Material material, CfgGroup cfg)
+		private const string Color = "_Color";
+		private const string Shininess = "_Shininess";
+		private const string RimPow = "_RimPower";
+		private const string NprRimPow = "_RimLightPower";
+		private const string RimShift = "_RimShift";
+		private const string NprRimShift = "_RimLightValue";
+		private const string RimCol = "_RimColor";
+		private const string NprRimCol = "_RimLightColor";
+		private const string OutlineWid = "_OutlineWidth";
+		private const string OutlineCol = "_OutlineColor";
+		private const string Toon = "_ToonRamp";
+		private const string ShadowRate = "_ShadowRateToon";
+		private const string ShadowCol = "_ShadowColor";
+
+		private static readonly Shader ToonyLightedOutline = Shader.Find("CM3D2/Toony_Lighted_Outline");
+		private static Color _tempColor = new Color(0, 0, 0, 1);
+
+		public static IEnumerator Run(Material material, MaterialGroup cfg)
 		{
 #if (DEBUG)
-			Debug.Log($"Editing material with name of: {material.name} with configuration for {cfg.GroupName}");
+			AMM.Logger.LogDebug($"Editing material with name of: {material.name} with configuration for {cfg.GroupName}");
 #endif
+			var isGlobal = Amm.Controls["global"] == cfg;
 
-			yield return new WaitForEndOfFrame();
+			if (isGlobal)
+			{
+				yield return new WaitForEndOfFrame();
+				yield return Amm.This.StartCoroutine(Run(material, Amm.Controls["global"]));
+			}
 
-			if (material == null)
+			if (material == null || cfg.Enable)
 			{
 				yield break;
 			}
-			//ModifyShaderIntoOutlineShader
-			if (cfg.SetOutlineShader.Value)
+			//Modifies the shader if possible into an outline shader.
+			if (cfg.SetOutlineShader)
 			{
 				if (!material.shader.name.Contains("Outline") && material.GetTag("Queue", true, null) != "Transparent" && material.GetTag("Queue", true, null) != "AlphaTest")
 				{
-
-				/*
-					List<string> keywords = new List<string>(material.shaderKeywords);
-
-					#if (DEBUG)
-					foreach (string s in keywords){
-						Debug.Log($"{material.shader.name} has the shader keyword of {s}");
-					}
-					#endif
-					*/
-
-					//if (!keywords.Contains("_ALPHAPREMULTIPLY_ON"))
-					//{
-
-						Shader shader = new Shader();
-
-#if (DEBUG)
-						Debug.Log($"Trying to fetch shader of name Shaders/" + material.shader.name + "_Outline");
-#endif
-
-						//shader = Resources.Load<Shader>("Shaders/" + material.shader.name + "_Outline");
-
-						shader = Shader.Find(material.shader.name + "_Outline");
-
-						if (shader == null)
-						{
-#if (DEBUG)
-							Debug.Log($"No shader found, resorting to fallback!");
-#endif
-							//shader = Resources.Load<Shader>("Shaders/" + "CM3D2/Lighted_Outline");
-
-							shader = Shader.Find("CM3D2/Toony_Lighted_Outline");
-						}
-
-						if (shader != null)
-						{
-#if (DEBUG)
-							Debug.Log($"Setting {shader.name} as new material over {material.shader.name}");
-#endif
-
-							material.shader = shader;
-						}
-					//}
+					material.shader = Shader.Find(material.shader.name + "_Outline") ?? ToonyLightedOutline ?? material.shader;
 				}
 				else if (material.shader.name.Contains("Outline_Tex"))
 				{
-					Shader shader = new Shader();
-
-#if (DEBUG)
-					Debug.Log($"Shaders/" + material.shader.name.Replace("_Tex", ""));
-#endif
-
-					//shader = Resources.Load<Shader>("Shaders/" + material.shader.name.Replace("_Tex", ""));
-
-					shader = Shader.Find(material.shader.name.Replace("_Tex", ""));
-
-					if (shader == null)
-					{
-#if (DEBUG)
-						Debug.Log($"No shader found, resorting to fallback!");
-#endif
-
-						shader = Shader.Find("CM3D2/Toony_Lighted_Outline");
-					}
-
-					if (shader != null)
-					{
-#if (DEBUG)
-						Debug.Log($"Setting {shader.name} as new material over {material.shader.name}");
-#endif
-
-						material.shader = shader;
-					}
+					material.shader = Shader.Find(material.shader.name.Replace("_Tex", string.Empty)) ?? ToonyLightedOutline ?? material.shader;
 				}
 			}
 
-			//ModifyRimPower
-			if (cfg.EditRimPower.Value && material.GetFloat(RimPow) != cfg.RimPower.Value)
+			if (cfg.EditColor)
 			{
+				_tempColor.r = cfg.Red;
+				_tempColor.g = cfg.Green;
+				_tempColor.b = cfg.Blue;
+				_tempColor.a = material.GetColor(Color).a;
 
-#if (DEBUG)
-				Debug.Log($"Editing RimPow");
-#endif
-				material.SetFloat(RimPow, cfg.RimPower.Value);
+				material.SetColor(Color, _tempColor);
 			}
-			if (cfg.EditRimPower.Value && material.GetFloat(NPRRimPow) != cfg.RimPower.Value)
-			{
-				material.SetFloat(NPRRimPow, cfg.RimPower.Value);
-			}
-			//ModifyRimShift
-			if (cfg.EditRimShift.Value && material.GetFloat(RimShift) != cfg.RimShift.Value)
-			{
-#if (DEBUG)
-				Debug.Log($"Editing RimShift");
-#endif
-				material.SetFloat(RimShift, cfg.RimShift.Value);
-			}
-			if (cfg.EditRimShift.Value && material.GetFloat(NPRRimShift) != cfg.RimShift.Value)
-			{
-#if (DEBUG)
-				Debug.Log($"Editing RimShift");
-#endif
-				material.SetFloat(NPRRimShift, cfg.RimShift.Value);
-			}
-			//ModifyRimColor
-			if (cfg.EditRimColor.Value)
-			{
-#if (DEBUG)
-				Debug.Log($"Editing RimCol");
-#endif
-				Color c = new Color(cfg.RimRed.Value, cfg.RimGreen.Value, cfg.RimBlue.Value, cfg.RimAlpha.Value);
 
-				if (material.GetColor(RimCol) != c)
+			//modifies Shininess
+			if (cfg.EditShininess)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing Shininess");
+#endif
+				material.SetFloat(Shininess, cfg.Shininess);
+			}
+
+			//modifies rim power
+			if (cfg.EditRimPower)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing RimPow");
+#endif
+				if (material.GetFloat(RimPow) != cfg.RimPower)
 				{
-					material.SetColor(RimCol, c);
+					material.SetFloat(RimPow, cfg.RimPower);
 				}
 
-				if (material.GetColor(NPRRimCol) != c)
+				if (material.GetFloat(NprRimPow) != cfg.RimPower)
 				{
-					material.SetColor(NPRRimCol, c);
+					material.SetFloat(NprRimPow, cfg.RimPower);
 				}
 			}
-			//ModifyOutlineWidth
-			if (cfg.EditOutlineWidth.Value && material.GetFloat(OutlineWid) != cfg.OutlineWidth.Value)
-			{
-#if (DEBUG)
-				Debug.Log($"Editing Outline Width");
-#endif
-				material.SetFloat(OutlineWid, cfg.OutlineWidth.Value);
-			}
-			//ModifyOutlineColor
-			if (cfg.EditOutlineColor.Value)
-			{
-#if (DEBUG)
-				Debug.Log($"Editing OutlineColor");
-#endif
-				Color c = new Color(cfg.OutlineRed.Value, cfg.OutlineGreen.Value, cfg.OutlineBlue.Value, cfg.OutlineAlpha.Value);
 
-				if (material.GetColor(OutlineCol) != c)
+			//Modify rim shift
+			if (cfg.EditRimShift)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing RimShift");
+#endif
+				if (material.GetFloat(RimShift) != cfg.RimShift)
 				{
-					material.SetColor(OutlineCol, c);
+					material.SetFloat(RimShift, cfg.RimShift);
+				}
+
+				if (material.GetFloat(NprRimShift) != cfg.RimShift)
+				{
+					material.SetFloat(NprRimShift, cfg.RimShift);
 				}
 			}
-			//ModifyToonRamp
-			if (cfg.ChangeToonTex.Value)
+
+			//Modify rim color
+			if (cfg.EditRimColor)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing RimCol");
+#endif
+				//var c = new Color(cfg.RimRed, cfg.RimGreen, cfg.RimBlue, cfg.RimAlpha);
+				_tempColor.r = cfg.RimRed;
+				_tempColor.g = cfg.RimGreen;
+				_tempColor.b = cfg.RimBlue;
+				//tempColor.a = cfg.RimAlpha;
+
+				if (material.GetColor(RimCol) != _tempColor)
+				{
+					material.SetColor(RimCol, _tempColor);
+				}
+
+				if (material.GetColor(NprRimCol) != _tempColor)
+				{
+					material.SetColor(NprRimCol, _tempColor);
+				}
+			}
+			//Modify outline's width
+			if (cfg.EditOutlineWidth && material.GetFloat(OutlineWid) != cfg.OutlineWidth)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing Outline Width");
+#endif
+				material.SetFloat(OutlineWid, cfg.OutlineWidth);
+			}
+			//Modify Outline Color
+			if (cfg.EditOutlineColor)
+			{
+#if (DEBUG)
+				AMM.Logger.LogDebug($"Editing OutlineColor");
+#endif
+				//Color c = new Color(cfg.OutlineRed, cfg.OutlineGreen, cfg.OutlineBlue, cfg.OutlineAlpha);
+				_tempColor.r = cfg.OutlineRed;
+				_tempColor.g = cfg.OutlineGreen;
+				_tempColor.b = cfg.OutlineBlue;
+				//tempColor.a = cfg.OutlineAlpha;
+
+				if (material.GetColor(OutlineCol) != _tempColor)
+				{
+					material.SetColor(OutlineCol, _tempColor);
+				}
+			}
+			//Modify Toon Ramp
+			if (cfg.ChangeToonTex)
 			{
 				try
 				{
-					Texture2D tex = ImportCM.CreateTexture(cfg.ToonTex.Value);
+					Texture2D tex = ImportCM.CreateTexture(cfg.ToonTex);
 
 					if (material.GetTexture(Toon) != tex)
 					{
 						material.SetTexture(Toon, tex);
 					}
 				}
-				catch { };
+				catch
+				{
+					// ignored
+				}
 			}
-			//ModifyShadowRateToon
-			if (cfg.ChangeShadowRateTex.Value)
+			//Modify Shadow Rate Toon
+			if (cfg.ChangeShadowRateTex)
 			{
 				try
 				{
-					Texture2D tex = ImportCM.CreateTexture(cfg.ShadowRateTex.Value);
+					Texture2D tex = ImportCM.CreateTexture(cfg.ShadowRateTex);
 
 					if (material.GetTexture(ShadowRate) != tex)
 					{
 						material.SetTexture(ShadowRate, tex);
 					}
 				}
-				catch { };
-			}
-			//ModifyShadowColor
-			if (cfg.EditShadowColor.Value)
-			{
-				Color c = new Color(cfg.ShadowRed.Value, cfg.ShadowGreen.Value, cfg.ShadowBlue.Value, cfg.ShadowAlpha.Value);
-
-				if (material.GetColor(ShadowCol) != c)
+				catch
 				{
-					material.SetColor(ShadowCol, c);
+					//Ignored
+				}
+			}
+			//Modify Shadow Color
+			if (cfg.EditShadowColor)
+			{
+				//Color c = new Color(cfg.ShadowRed, cfg.ShadowGreen, cfg.ShadowBlue, cfg.ShadowAlpha);
+				_tempColor.r = cfg.ShadowRed;
+				_tempColor.g = cfg.ShadowGreen;
+				_tempColor.b = cfg.ShadowBlue;
+				//tempColor.a = cfg.ShadowAlpha;
+
+				if (material.GetColor(ShadowCol) != _tempColor)
+				{
+					material.SetColor(ShadowCol, _tempColor);
 				}
 			}
 		}
-		public static IEnumerator ChangeShadows(Renderer renderer, CfgGroup cfg)
+
+		internal static IEnumerator ChangeShadows(Renderer renderer, MaterialGroup cfg)
 		{
-			if (cfg.EditShadowCasting.Value && (int)renderer.shadowCastingMode != cfg.ShadowCast.Value)
+			var isGlobal = Amm.Controls["global"] == cfg;
+			if (isGlobal)
 			{
-				renderer.shadowCastingMode = (ShadowCastingMode)cfg.ShadowCast.Value;
+				yield return new WaitForEndOfFrame();
+				yield return Amm.This.StartCoroutine(ChangeShadows(renderer, Amm.Controls["global"]));
 			}
 
-			if (cfg.EditShadowRecieving.Value && renderer.receiveShadows != cfg.ShadowRecieving.Value)
-			{
-				renderer.receiveShadows = cfg.ShadowRecieving.Value;
-			}
+			renderer.shadowCastingMode = cfg.EditShadowCasting ? (ShadowCastingMode)cfg.ShadowCast : renderer.shadowCastingMode;
+			renderer.receiveShadows = cfg.EditShadowReceiving ? cfg.ShadowReceiving : renderer.receiveShadows;
 
-			yield return null;
+			// ReSharper disable once RedundantJumpStatement, not really redundant due to coroutes requiring a yield.
+			yield break;
 		}
 	}
 }

@@ -1,136 +1,217 @@
-﻿using System.Collections;
+﻿using COM3D2.AdvancedMaterialModifier.Toolbox;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static COM3D2.AdvancedMaterialModifier.Plugin.FetchLibrary;
 
-namespace COM3D2.AdvancedMaterialModifier.Plugin
+namespace COM3D2.AdvancedMaterialModifier
 {
-	internal class SorterSenderSaver
+	internal static class SorterSenderSaver
 	{
+		private static readonly int[] BodySlot = { 0 };
+		private static readonly int[] HeadSlot = { 1 };
+		private static readonly int[] HairSlot = { 3, 4, 5, 6, 18 };
+		private static readonly int[] ClothesSlot = { 7, 8, 9, 10, 11, 12, 13, 14 };
+		private static readonly int[] AccSlot = { 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55 };
 
-		private static readonly int[] bodyslot = new int[] { 0 };
-		private static readonly int[] headslot = new int[] { 1 };
-		private static readonly int[] hairslot = new int[] { 3, 4, 5, 6, 18 };
-		private static readonly int[] clothesslot = new int[] { 7, 8, 9, 10, 11, 12, 13, 14 };
-		private static readonly int[] accslot = new int[] { 15, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55 };
+		public static Dictionary<GameObject, string> ObjectDictionary { get; private set; } = new Dictionary<GameObject, string>();
 
-		private static Dictionary<GameObject, CfgGroup> ObjectDictionary = new Dictionary<GameObject, CfgGroup>();
-		public static bool AddToObjectDictionary(GameObject gameobj, int slotid)
+		private static IEnumerator _modifyAllCoroute;
+		private static readonly Dictionary<MaterialGroup, IEnumerator> ModifyGroupCoroutes = new Dictionary<MaterialGroup, IEnumerator>();
+		private static readonly Dictionary<GameObject, IEnumerator> ModifySingleCoroutes = new Dictionary<GameObject, IEnumerator>();
+
+		internal static bool AddToObjectDictionary(GameObject gameObj, int slotid)
 		{
-
 #if (DEBUG)
-			Debug.Log($"Saving new object to list!");
+			AMM.Logger.LogDebug($"Saving new object to list!");
 #endif
 
-			if (bodyslot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameobj))
+			if (BodySlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
 			{
-				ObjectDictionary.Add(gameobj, Init.Body);
+				ObjectDictionary.Add(gameObj, "body");
 				return true;
 			}
-			else if (headslot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameobj))
+
+			if (HeadSlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
 			{
-				ObjectDictionary.Add(gameobj, Init.Head);
+				ObjectDictionary.Add(gameObj, "head");
 				return true;
 			}
-			else if (hairslot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameobj))
+
+			if (HairSlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
 			{
-				ObjectDictionary.Add(gameobj, Init.Hair);
+				ObjectDictionary.Add(gameObj, "hair");
 				return true;
 			}
-			else if (clothesslot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameobj))
+
+			if (ClothesSlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
 			{
-				ObjectDictionary.Add(gameobj, Init.Clothes);
+				ObjectDictionary.Add(gameObj, "clothes");
 				return true;
 			}
-			else if (accslot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameobj))
+
+			if (AccSlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
 			{
-				ObjectDictionary.Add(gameobj, Init.Acc);
+				ObjectDictionary.Add(gameObj, "acc");
 				return true;
 			}
 
 #if (DEBUG)
-			Debug.Log($"Returning False!");
+			AMM.Logger.LogDebug($"Returning False!");
 #endif
 
 			return false;
 		}
-		public static bool AddToObjectDictionary(GameObject gameobj, CfgGroup cfg)
+
+		internal static bool AddToObjectDictionary(GameObject gameObj, string cfg)
 		{
-			if (gameobj != null && !ObjectDictionary.ContainsKey(gameobj))
+			if (gameObj == null)
 			{
-				ObjectDictionary.Add(gameobj, cfg);
-				return true;
+				return false;
 			}
 
-			return false;
+			ObjectDictionary[gameObj] = cfg;
+			return true;
 		}
-		public static IEnumerator ModifyAll()
-		{
 
+		internal static void ModifyAll(bool avoidWait = false)
+		{
+			if (_modifyAllCoroute != null)
+			{
+				Amm.This.StopCoroutine(_modifyAllCoroute);
+			}
+
+			_modifyAllCoroute = ModifyAllFunc(avoidWait);
+			Amm.This.StartCoroutine(_modifyAllCoroute);
+		}
+
+		internal static void ModifyGroup(MaterialGroup cfg, bool avoidWait = false)
+		{
+			if (ModifyGroupCoroutes.TryGetValue(cfg, out var coroute) && coroute != null)
+			{
+				Amm.This.StopCoroutine(coroute);
+			}
+
+			ModifyGroupCoroutes[cfg] = ModifyGroupFunc(cfg, avoidWait);
+			Amm.This.StartCoroutine(ModifyGroupCoroutes[cfg]);
+		}
+
+		internal static void ModifySingle(GameObject @object, bool avoidWait = false)
+		{
+			if (@object is null)
+			{
+				return;
+			}
+
+			if (ModifySingleCoroutes.TryGetValue(@object, out var coroute) && coroute != null)
+			{
+				Amm.This.StopCoroutine(coroute);
+			}
+
+			ModifySingleCoroutes[@object] = ModifySingleFunc(@object, avoidWait);
+			Amm.This.StartCoroutine(ModifySingleCoroutes[@object]);
+		}
+
+		internal static void CleanDictionary()
+		{
 			ObjectDictionary = ObjectDictionary
 			.Select(k => k)
-			.Where(k => k.Key != null)
+			.Where(k => k.Key != null && k.Value != null)
 			.ToDictionary(k => k.Key, k => k.Value);
-
-			ObjectDictionary
-			.Keys
-			.ToList()
-			.ForEach(k => Init.@this.StartCoroutine(ModifySingle(k)));
-
-			yield return null;
 		}
-		public static IEnumerator ModifyAllOfGroup(CfgGroup cfg)
+
+		internal static IEnumerator ModifyAllFunc(bool avoidWait = false)
 		{
+			if (!avoidWait)
+			{
+				yield return new WaitForSeconds(0.10f);
+			}
 
-			ObjectDictionary = ObjectDictionary
-			.Select(k => k)
-			.Where(k => k.Key != null)
-			.ToDictionary(k => k.Key, k => k.Value);
+			CleanDictionary();
 
-			ObjectDictionary
-			.Select(kp => kp)
-			.Where(kp => kp.Value == cfg)
-			.ToList()
-			.ForEach(k => Init.@this.StartCoroutine(ModifySingle(k.Key)));
+			foreach (var keyPair in ObjectDictionary)
+			{
+				ModifySingle(keyPair.Key, true);
+			}
 
-			yield return null;
+			_modifyAllCoroute = null;
+
+			// ReSharper disable once RedundantJumpStatement
+			yield break;
 		}
-		public static IEnumerator ModifySingle(GameObject @object)
+
+		internal static IEnumerator ModifyGroupFunc(MaterialGroup cfg, bool avoidWait = false)
+		{
+			if (!avoidWait)
+			{
+				yield return new WaitForSeconds(0.10f);
+			}
+
+			CleanDictionary();
+
+			var global = Amm.Controls["global"] == cfg;
+
+			foreach (var kp in ObjectDictionary)
+			{
+				if (global || Amm.Controls[kp.Value] == cfg)
+				{
+					ModifySingle(kp.Key, true);
+				}
+			}
+
+			ModifyGroupCoroutes[cfg] = null;
+		}
+
+		internal static IEnumerator ModifySingleFunc(GameObject @object, bool avoidWait = false)
 		{
 #if (DEBUG)
-			Debug.Log($"Running single task!");
+			AMM.Logger.LogDebug($"Running single task!");
 #endif
 
-			CfgGroup activecfg = null;
+			var global = Amm.Controls["global"];
 
-			if (@object == null || !ObjectDictionary.TryGetValue(@object, out activecfg) || activecfg.Enable.Value != true)
+			if (!avoidWait)
+			{
+				yield return new WaitForSeconds(0.10f);
+			}
+
+			if (@object == null || ObjectDictionary.TryGetValue(@object, out var stringCfg) == false)
+			{
+				yield break;
+			}
+
+			MaterialGroup activeCfg = Amm.Controls[stringCfg];
+
+			if (activeCfg == null || (activeCfg.Enable == false && global.Enable == false))
 			{
 				yield break;
 			}
 
 #if (DEBUG)
-			Debug.Log($"Going through renderers to send to shadow changing");
+			AMM.Logger.LogDebug($"Going through renderers to send to shadow changing");
 #endif
 
-			List<Renderer> renderers = GetAllRenderers(@object).ToList();
+			var renderers = @object.GetAllRenderers().ToArray();
 
-			renderers
-			.ForEach(r => Init.@this.StartCoroutine(PropertyChanger.ChangeShadows(r, activecfg)));
+			foreach (var renderer in renderers)
+			{
+				Amm.This.StartCoroutine(PropertyChanger.ChangeShadows(renderer, activeCfg));
+			}
 
-			List<Material> materials = renderers
-			.Select(r => GetAllMaterials(r))
-			.SelectMany(m => m)
-			.Where(m => m != null).ToList();
+			var materials = renderers
+			.SelectMany(r => r.GetAllMaterials())
+			.Where(m => m != null);
 
 #if (DEBUG)
-			Debug.Log($"Working... Collected this many materials: { materials.Count }");
+			AMM.Logger.LogDebug($"Working... Collected this many materials: { materials.Count }");
 #endif
 
-			materials
-			.ForEach(m => Init.@this.StartCoroutine(PropertyChanger.Run(m, activecfg)));
+			foreach (var material in materials)
+			{
+				Amm.This.StartCoroutine(PropertyChanger.Run(material, activeCfg));
+			}
 
-			yield return null;
+			ModifySingleCoroutes[@object] = null;
 		}
 	}
 }

@@ -1,25 +1,24 @@
-﻿using MeidoPhotoStudio.Plugin;
-using HarmonyLib;
+﻿using HarmonyLib;
+using MeidoPhotoStudio.Plugin;
 using UnityEngine;
-using static COM3D2.AdvancedMaterialModifier.Plugin.Init;
-using static COM3D2.AdvancedMaterialModifier.Plugin.SorterSenderSaver;
+using static COM3D2.AdvancedMaterialModifier.SorterSenderSaver;
 
-namespace COM3D2.AdvancedMaterialModifier.Plugin
+namespace COM3D2.AdvancedMaterialModifier
 {
-	internal class MPSHarmonyPatch
+	internal static class MpsHarmonyPatch
 	{
 		//MPS Specific Code. Shouldn't take effect if MPS is not present.
 		[HarmonyPatch(typeof(PropManager), "AttachDragPoint")]
 		[HarmonyPostfix]
-		private static void NotifyOfMPSLoad(ref GameObject __0)
+		private static void NotifyOfMpsLoad(ref GameObject __0)
 		{
 #if (DEBUG)
-			Debug.Log($"Picked up an MPS load: {__0.name}");
+			AMM.Logger.LogDebug($"Picked up an MPS load: {__0.name}");
 #endif
 
-			AddToObjectDictionary(__0, MpsProps);
+			AddToObjectDictionary(__0, "mps");
 
-			Init.@this.StartCoroutine(ModifySingle(__0));
+			ModifySingle(__0, true);
 		}
 	}
 }
