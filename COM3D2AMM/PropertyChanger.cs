@@ -31,16 +31,17 @@ namespace COM3D2.AdvancedMaterialModifier
 #endif
 			var isGlobal = Amm.Controls["global"] == cfg;
 
-			if (isGlobal)
+			if (isGlobal == false)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return Amm.This.StartCoroutine(Run(material, Amm.Controls["global"]));
 			}
 
-			if (material == null || cfg.Enable)
+			if (material == null || !cfg.Enable)
 			{
 				yield break;
 			}
+
 			//Modifies the shader if possible into an outline shader.
 			if (cfg.SetOutlineShader)
 			{
@@ -207,7 +208,7 @@ namespace COM3D2.AdvancedMaterialModifier
 		internal static IEnumerator ChangeShadows(Renderer renderer, MaterialGroup cfg)
 		{
 			var isGlobal = Amm.Controls["global"] == cfg;
-			if (isGlobal)
+			if (isGlobal == false)
 			{
 				yield return new WaitForEndOfFrame();
 				yield return Amm.This.StartCoroutine(ChangeShadows(renderer, Amm.Controls["global"]));
@@ -215,9 +216,6 @@ namespace COM3D2.AdvancedMaterialModifier
 
 			renderer.shadowCastingMode = cfg.EditShadowCasting ? (ShadowCastingMode)cfg.ShadowCast : renderer.shadowCastingMode;
 			renderer.receiveShadows = cfg.EditShadowReceiving ? cfg.ShadowReceiving : renderer.receiveShadows;
-
-			// ReSharper disable once RedundantJumpStatement, not really redundant due to coroutes requiring a yield.
-			yield break;
 		}
 	}
 }

@@ -103,7 +103,7 @@ namespace COM3D2.AdvancedMaterialModifier
 				FileSave.InitialDirectory = Paths.GameRootPath;
 				FileSave.ShowDialog();
 
-				if (!String.IsNullOrEmpty(FileSave.FileName))
+				if (!string.IsNullOrEmpty(FileSave.FileName))
 				{
 					path = FileSave.FileName;
 				}
@@ -113,10 +113,10 @@ namespace COM3D2.AdvancedMaterialModifier
 				path = Paths.ConfigPath + "\\AdvancedMaterialModifier.json";
 			}
 
-			if (path.IsNullOrWhiteSpace())
+			if (path.IsNullOrWhiteSpace() == false)
 			{
 				var saveSer = JsonConvert.SerializeObject(Controls, Formatting.Indented);
-				if (path != null) File.WriteAllText(path, saveSer);
+				File.WriteAllText(path, saveSer);
 			}
 		}
 
