@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace COM3D2.AdvancedMaterialModifier
 {
-	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "2.0")]
+	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "2.0.1")]
 	[BepInDependency("org.bepinex.plugins.unityinjectorloader", BepInDependency.DependencyFlags.SoftDependency)]
 	public class Amm : BaseUnityPlugin
 	{
