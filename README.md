@@ -35,7 +35,7 @@ A plugin for COM3D2 that helps make quick and uniform edits to materials ingame.
 
 ## Usage ##
 
-Usage is pretty simple. Drop the plugin .dll into your Bepinex/Plugins folder and start your game. AMM now has a proper UI, you can open it from the gear menu or configure a hotkey in the ConfigurationManager.
+Usage is pretty simple. You need to have COM3D2.API, preferably the version within CMI. Drop the plugin .dll into your Bepinex/Plugins folder and start your game. AMM now has a proper UI, you can open it from the gear menu or configure a hotkey in the ConfigurationManager.
 
 # Enjoy #
 And don't abuse your meidos!
