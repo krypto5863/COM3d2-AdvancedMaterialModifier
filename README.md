@@ -35,9 +35,7 @@ A plugin for COM3D2 that helps make quick and uniform edits to materials ingame.
 
 ## Usage ##
 
-Usage is pretty simple. Drop the plugin .dll into your Bepinex/Plugins folder and start your game. If you're using configuration manager, which is how AdvancedMaterialModifier (aka AMM) was designed to be configured, then press F1 and set your settings underneath the AMM drawer there. 
-
-If you are not using ConfigurationManager, then check Bepinex/Config for a new configuration file that can be used to configure AMM. Changes may not apply immediately without a restart if this method is used.
+Usage is pretty simple. Drop the plugin .dll into your Bepinex/Plugins folder and start your game. AMM now has a proper UI, you can open it from the gear menu or configure a hotkey in the ConfigurationManager.
 
 # Enjoy #
 And don't abuse your meidos!
