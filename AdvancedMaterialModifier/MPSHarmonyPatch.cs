@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using MeidoPhotoStudio.Plugin;
 using UnityEngine;
-using static COM3D2.AdvancedMaterialModifier.SorterSenderSaver;
+using static AdvancedMaterialModifier.SorterSenderSaver;
 
-namespace COM3D2.AdvancedMaterialModifier
+namespace AdvancedMaterialModifier
 {
 	internal static class MpsHarmonyPatch
 	{
@@ -13,7 +13,7 @@ namespace COM3D2.AdvancedMaterialModifier
 		private static void NotifyOfMpsLoad(ref GameObject __0)
 		{
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Picked up an MPS load: {__0.name}");
+			AdvancedMaterialModifier.Logger.LogDebug($"Picked up an MPS load: {__0.name}");
 #endif
 
 			AddToObjectDictionary(__0, "mps");

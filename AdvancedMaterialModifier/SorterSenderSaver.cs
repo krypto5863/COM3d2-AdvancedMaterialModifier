@@ -1,10 +1,9 @@
-﻿using COM3D2.AdvancedMaterialModifier.Toolbox;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace COM3D2.AdvancedMaterialModifier
+namespace AdvancedMaterialModifier
 {
 	internal static class SorterSenderSaver
 	{
@@ -23,7 +22,7 @@ namespace COM3D2.AdvancedMaterialModifier
 		internal static bool AddToObjectDictionary(GameObject gameObj, int slotid)
 		{
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Saving new object to list!");
+			AdvancedMaterialModifier.Logger.LogDebug($"Saving new object to list!");
 #endif
 
 			if (BodySlot.Contains(slotid) && !ObjectDictionary.ContainsKey(gameObj))
@@ -57,7 +56,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			}
 
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Returning False!");
+			AdvancedMaterialModifier.Logger.LogDebug($"Returning False!");
 #endif
 
 			return false;
@@ -78,22 +77,22 @@ namespace COM3D2.AdvancedMaterialModifier
 		{
 			if (_modifyAllCoroute != null)
 			{
-				Amm.This.StopCoroutine(_modifyAllCoroute);
+				AdvancedMaterialModifier.This.StopCoroutine(_modifyAllCoroute);
 			}
 
 			_modifyAllCoroute = ModifyAllFunc(avoidWait);
-			Amm.This.StartCoroutine(_modifyAllCoroute);
+			AdvancedMaterialModifier.This.StartCoroutine(_modifyAllCoroute);
 		}
 
 		internal static void ModifyGroup(MaterialGroup cfg, bool avoidWait = false)
 		{
 			if (ModifyGroupCoroutes.TryGetValue(cfg, out var coroute) && coroute != null)
 			{
-				Amm.This.StopCoroutine(coroute);
+				AdvancedMaterialModifier.This.StopCoroutine(coroute);
 			}
 
 			ModifyGroupCoroutes[cfg] = ModifyGroupFunc(cfg, avoidWait);
-			Amm.This.StartCoroutine(ModifyGroupCoroutes[cfg]);
+			AdvancedMaterialModifier.This.StartCoroutine(ModifyGroupCoroutes[cfg]);
 		}
 
 		internal static void ModifySingle(GameObject @object, bool avoidWait = false)
@@ -105,11 +104,11 @@ namespace COM3D2.AdvancedMaterialModifier
 
 			if (ModifySingleCoroutes.TryGetValue(@object, out var coroute) && coroute != null)
 			{
-				Amm.This.StopCoroutine(coroute);
+				AdvancedMaterialModifier.This.StopCoroutine(coroute);
 			}
 
 			ModifySingleCoroutes[@object] = ModifySingleFunc(@object, avoidWait);
-			Amm.This.StartCoroutine(ModifySingleCoroutes[@object]);
+			AdvancedMaterialModifier.This.StartCoroutine(ModifySingleCoroutes[@object]);
 		}
 
 		internal static void CleanDictionary()
@@ -149,11 +148,11 @@ namespace COM3D2.AdvancedMaterialModifier
 
 			CleanDictionary();
 
-			var global = Amm.Controls["global"] == cfg;
+			var global = AdvancedMaterialModifier.Controls["global"] == cfg;
 
 			foreach (var kp in ObjectDictionary)
 			{
-				if (global || Amm.Controls[kp.Value] == cfg)
+				if (global || AdvancedMaterialModifier.Controls[kp.Value] == cfg)
 				{
 					ModifySingle(kp.Key, true);
 				}
@@ -165,10 +164,10 @@ namespace COM3D2.AdvancedMaterialModifier
 		internal static IEnumerator ModifySingleFunc(GameObject @object, bool avoidWait = false)
 		{
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Running single task!");
+			AdvancedMaterialModifier.Logger.LogDebug($"Running single task!");
 #endif
 
-			var global = Amm.Controls["global"];
+			var global = AdvancedMaterialModifier.Controls["global"];
 
 			if (!avoidWait)
 			{
@@ -180,7 +179,7 @@ namespace COM3D2.AdvancedMaterialModifier
 				yield break;
 			}
 
-			MaterialGroup activeCfg = Amm.Controls[stringCfg];
+			MaterialGroup activeCfg = AdvancedMaterialModifier.Controls[stringCfg];
 
 			if (activeCfg == null || (activeCfg.Enable == false && global.Enable == false))
 			{
@@ -188,27 +187,28 @@ namespace COM3D2.AdvancedMaterialModifier
 			}
 
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Going through renderers to send to shadow changing");
+			AdvancedMaterialModifier.Logger.LogDebug($"Going through renderers to send to shadow changing");
 #endif
 
 			var renderers = @object.GetAllRenderers().ToArray();
 
 			foreach (var renderer in renderers)
 			{
-				Amm.This.StartCoroutine(PropertyChanger.ChangeShadows(renderer, activeCfg));
+				AdvancedMaterialModifier.This.StartCoroutine(PropertyChanger.ChangeShadows(renderer, activeCfg));
 			}
 
 			var materials = renderers
 			.SelectMany(r => r.GetAllMaterials())
-			.Where(m => m != null);
+			.Where(m => m != null)
+			.ToList();
 
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Working... Collected this many materials: { materials.Count }");
+			AdvancedMaterialModifier.Logger.LogDebug($"Working... Collected this many materials: { materials.Count }");
 #endif
 
 			foreach (var material in materials)
 			{
-				Amm.This.StartCoroutine(PropertyChanger.Run(material, activeCfg));
+				AdvancedMaterialModifier.This.StartCoroutine(PropertyChanger.Run(material, activeCfg));
 			}
 
 			ModifySingleCoroutes[@object] = null;

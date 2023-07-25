@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace COM3D2.AdvancedMaterialModifier.UI
+namespace AdvancedMaterialModifier.UI
 {
 	public static class MainGui
 	{
@@ -93,7 +93,7 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 				WindowRect.y = Screen.height / 4f;
 				WindowRect.x = Screen.width / 3f;
 
-				Amm.Logger.LogDebug($"Changing sizes of AMM UI to {WindowRect.width} x {WindowRect.height}");
+				AdvancedMaterialModifier.Logger.LogDebug($"Changing sizes of AdvancedMaterialModifier UI to {WindowRect.width} x {WindowRect.height}");
 
 				_currentHeight = Screen.height;
 				_currentWidth = Screen.width;
@@ -111,12 +111,17 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 
 			if (GUI.Button(CloseButton, "X"))
 			{
-				Amm.EnabledGui = false;
+				AdvancedMaterialModifier.EnabledGui = false;
+
+				if (AdvancedMaterialModifier.Autosave.Value)
+				{
+					AdvancedMaterialModifier.SaveConfig();
+				}
 			}
 
 			_scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
 
-			foreach (var group in Amm.Controls)
+			foreach (var group in AdvancedMaterialModifier.Controls)
 			{
 				group.Value.DisplayUiElement();
 			}
@@ -127,13 +132,13 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 
 			if (GUILayout.Button("Export"))
 			{
-				Amm.SaveConfig(true);
+				AdvancedMaterialModifier.SaveConfig(true);
 			}
 
 			if (GUILayout.Button("Import"))
 			{
 				SorterSenderSaver.ModifyAll(true);
-				Amm.LoadConfig(true);
+				AdvancedMaterialModifier.LoadConfig(true);
 			}
 
 			GUILayout.FlexibleSpace();
@@ -141,12 +146,12 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 			if (GUILayout.Button("Reload"))
 			{
 				SorterSenderSaver.ModifyAll(true);
-				Amm.LoadConfig();
+				AdvancedMaterialModifier.LoadConfig();
 			}
 
 			if (GUILayout.Button("Save"))
 			{
-				Amm.SaveConfig();
+				AdvancedMaterialModifier.SaveConfig();
 			}
 
 			GUILayout.EndHorizontal();

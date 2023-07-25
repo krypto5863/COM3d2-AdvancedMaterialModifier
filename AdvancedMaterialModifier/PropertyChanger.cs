@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace COM3D2.AdvancedMaterialModifier
+namespace AdvancedMaterialModifier
 {
 	//Concerned with taking materials and changing them to user spec.
 	internal static class PropertyChanger
@@ -27,14 +27,14 @@ namespace COM3D2.AdvancedMaterialModifier
 		public static IEnumerator Run(Material material, MaterialGroup cfg)
 		{
 #if (DEBUG)
-			AMM.Logger.LogDebug($"Editing material with name of: {material.name} with configuration for {cfg.GroupName}");
+			AdvancedMaterialModifier.Logger.LogDebug($"Editing material with name of: {material.name} with configuration for {cfg.GroupName}");
 #endif
-			var isGlobal = Amm.Controls["global"] == cfg;
+			var isGlobal = AdvancedMaterialModifier.Controls["global"] == cfg;
 
 			if (isGlobal == false)
 			{
 				yield return new WaitForEndOfFrame();
-				yield return Amm.This.StartCoroutine(Run(material, Amm.Controls["global"]));
+				yield return AdvancedMaterialModifier.This.StartCoroutine(Run(material, AdvancedMaterialModifier.Controls["global"]));
 			}
 
 			if (material == null || !cfg.Enable)
@@ -69,7 +69,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditShininess)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing Shininess");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing Shininess");
 #endif
 				material.SetFloat(Shininess, cfg.Shininess);
 			}
@@ -78,7 +78,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditRimPower)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing RimPow");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing RimPow");
 #endif
 				if (material.GetFloat(RimPow) != cfg.RimPower)
 				{
@@ -95,7 +95,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditRimShift)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing RimShift");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing RimShift");
 #endif
 				if (material.GetFloat(RimShift) != cfg.RimShift)
 				{
@@ -112,7 +112,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditRimColor)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing RimCol");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing RimCol");
 #endif
 				//var c = new Color(cfg.RimRed, cfg.RimGreen, cfg.RimBlue, cfg.RimAlpha);
 				_tempColor.r = cfg.RimRed;
@@ -134,7 +134,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditOutlineWidth && material.GetFloat(OutlineWid) != cfg.OutlineWidth)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing Outline Width");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing Outline Width");
 #endif
 				material.SetFloat(OutlineWid, cfg.OutlineWidth);
 			}
@@ -142,7 +142,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			if (cfg.EditOutlineColor)
 			{
 #if (DEBUG)
-				AMM.Logger.LogDebug($"Editing OutlineColor");
+				AdvancedMaterialModifier.Logger.LogDebug($"Editing OutlineColor");
 #endif
 				//Color c = new Color(cfg.OutlineRed, cfg.OutlineGreen, cfg.OutlineBlue, cfg.OutlineAlpha);
 				_tempColor.r = cfg.OutlineRed;
@@ -207,11 +207,11 @@ namespace COM3D2.AdvancedMaterialModifier
 
 		internal static IEnumerator ChangeShadows(Renderer renderer, MaterialGroup cfg)
 		{
-			var isGlobal = Amm.Controls["global"] == cfg;
+			var isGlobal = AdvancedMaterialModifier.Controls["global"] == cfg;
 			if (isGlobal == false)
 			{
 				yield return new WaitForEndOfFrame();
-				yield return Amm.This.StartCoroutine(ChangeShadows(renderer, Amm.Controls["global"]));
+				yield return AdvancedMaterialModifier.This.StartCoroutine(ChangeShadows(renderer, AdvancedMaterialModifier.Controls["global"]));
 			}
 
 			renderer.shadowCastingMode = cfg.EditShadowCasting ? (ShadowCastingMode)cfg.ShadowCast : renderer.shadowCastingMode;

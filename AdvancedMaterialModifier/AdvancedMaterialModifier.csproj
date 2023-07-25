@@ -8,7 +8,7 @@
     <ProjectGuid>{572669DB-CF89-4387-ABC6-EDF614528638}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>COM3D2.AdvancedMaterialModifier</RootNamespace>
+    <RootNamespace>AdvancedMaterialModifier</RootNamespace>
     <AssemblyName>COM3D2.AdvancedMaterialModifier</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,14 +35,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="UI\MainGui.cs" />
-    <Compile Include="Toolbox\Extensions.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="SorterSenderSaver.cs" />
     <Compile Include="PropertyChanger.cs" />
     <Compile Include="MaterialGroup.cs" />
     <Compile Include="UI\UIToolbox.cs" />
     <Compile Include="VanillaHarmonyPatch.cs" />
     <Compile Include="MpsHarmonyPatch.cs" />
-    <Compile Include="Amm.cs" />
+    <Compile Include="AdvancedMaterialModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +101,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

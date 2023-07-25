@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace COM3D2.AdvancedMaterialModifier.UI
+namespace AdvancedMaterialModifier.UI
 {
 	internal static class UiToolbox
 	{
@@ -27,7 +27,7 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 			}
 
 			var point = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-			return Amm.EnabledGui && windowRect.HasValue && windowRect.Value.Contains(point);
+			return AdvancedMaterialModifier.EnabledGui && windowRect.HasValue && windowRect.Value.Contains(point);
 		}
 
 		private static readonly Regex NotNumPeriod = new Regex("[^0-9.-]");
@@ -45,7 +45,7 @@ namespace COM3D2.AdvancedMaterialModifier.UI
 		{
 			GUILayout.BeginHorizontal();
 
-			if (label.IsNullOrWhiteSpace())
+			if (label.IsNullOrWhiteSpace() == false)
 			{
 				GUILayout.Label(label);
 			}

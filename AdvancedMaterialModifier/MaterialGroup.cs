@@ -1,9 +1,10 @@
-﻿using COM3D2.AdvancedMaterialModifier.UI;
+﻿using AdvancedMaterialModifier.UI;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using UnityEngine;
 
-namespace COM3D2.AdvancedMaterialModifier
+namespace AdvancedMaterialModifier
+
 {
 	public class MaterialGroup : INotifyPropertyChanged
 	{
@@ -131,7 +132,7 @@ namespace COM3D2.AdvancedMaterialModifier
 			PropertyChanged += (s, e) =>
 			{
 #if (DEBUG)
-				AMM.Logger.LogMessage("Property changed, sending coroute.");
+				AdvancedMaterialModifier.Logger.LogMessage("Property changed, sending coroute.");
 #endif
 				SorterSenderSaver.ModifyGroup(this);
 			};

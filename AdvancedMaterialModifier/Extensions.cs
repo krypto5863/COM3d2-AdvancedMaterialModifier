@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace COM3D2.AdvancedMaterialModifier.Toolbox
+namespace AdvancedMaterialModifier
 {
 	internal static class Extensions
 	{
@@ -28,7 +28,7 @@ namespace COM3D2.AdvancedMaterialModifier.Toolbox
 		{
 			return
 				render
-				.materials
+				.sharedMaterials
 				.Where(m => m != null);
 		}
 
@@ -50,6 +50,12 @@ namespace COM3D2.AdvancedMaterialModifier.Toolbox
 				.GetComponentsInChildren<Transform>(true)
 				.Select(t => t?.GetComponent<Renderer>())
 				.Where(r => r != null);
+		}
+		public static TBodySkin GetParentTBodySkin(this Renderer render)
+		{
+			return render?.GetComponentInParent<TBody>()?
+				.goSlot?
+				.FirstOrDefault(r => r?.obj?.transform.GetComponentInChildren<Renderer>() == render);
 		}
 	}
 }
