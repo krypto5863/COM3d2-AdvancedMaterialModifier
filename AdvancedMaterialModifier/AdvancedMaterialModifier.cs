@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace AdvancedMaterialModifier
 {
-	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "2.1")]
+	[BepInPlugin("AdvancedMaterialModifier", "AdvancedMaterialModifier", "2.2")]
 	[BepInDependency("org.bepinex.plugins.unityinjectorloader", BepInDependency.DependencyFlags.SoftDependency)]
 	[BepInDependency("Bepinex.COMaterialEditor", BepInDependency.DependencyFlags.SoftDependency)]
 	public class AdvancedMaterialModifier : BaseUnityPlugin
